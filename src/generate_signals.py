@@ -1,14 +1,19 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import os
 
-# Создание папки для сохранения, если её нет
-os.makedirs("data", exist_ok=True)
+matplotlib.use('Agg')
+
+# Определяем путь к data/synthetic из корня проекта
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+save_dir = os.path.join(project_root, "data", "synthetic")
+os.makedirs(save_dir, exist_ok=True)
 
 def generate_clean_signal(length=1000):
     """Создание чистого сигнала — плавный спуск амплитуды (затухание в волокне)"""
     x = np.linspace(0, 1, length)
-    signal = np.exp(-5 * x)  # имитация затухания
+    signal = np.exp(-5 * x)  # имитация экспоненциального затухания
     return signal
 
 def add_noise(signal, noise_level=0.02):
@@ -19,7 +24,7 @@ def add_noise(signal, noise_level=0.02):
 def insert_defect(signal, position=600, depth=0.4, width=10):
     """Добавление аномалии (всплеск)"""
     signal_def = signal.copy()
-    signal_def[position:position+width] -= depth
+    signal_def[position:position + width] -= depth
     return signal_def
 
 def plot_signals(*signals, labels=None, title="Сигналы"):
@@ -32,7 +37,8 @@ def plot_signals(*signals, labels=None, title="Сигналы"):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    plt.savefig(os.path.join(save_dir, "synthetic_signals.png"))
+
 
 # Генерация
 clean = generate_clean_signal()
@@ -40,11 +46,13 @@ noisy = add_noise(clean)
 defected = insert_defect(noisy)
 
 # Сохраняем
-np.save("data/clean.npy", clean)
-np.save("data/noisy.npy", noisy)
-np.save("data/defected.npy", defected)
+np.save(os.path.join(save_dir, "clean.npy"), clean)
+np.save(os.path.join(save_dir, "noisy.npy"), noisy)
+np.save(os.path.join(save_dir, "defected.npy"), defected)
 
 # Визуализация
 plot_signals(clean, noisy, defected,
              labels=["Чистый", "С шумом", "С дефектом"],
              title="Генерация синтетических сигналов OTDR")
+
+print("Сигналы сохранены в data/synthetic")
