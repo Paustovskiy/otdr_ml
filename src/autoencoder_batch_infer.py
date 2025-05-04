@@ -5,7 +5,9 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')
+from skimage.metrics import structural_similarity as ssim  # ⬅ добавили SSIM
+
+matplotlib.use("Agg")
 
 WINDOW_SIZE = 512
 
@@ -69,15 +71,32 @@ if __name__ == "__main__":
             with torch.no_grad():
                 output = model(x).squeeze().numpy()
 
-            mse = np.mean((signal[:WINDOW_SIZE] - output) ** 2)
-            results.append({"file": fname, "mse": mse})
+            mse_val = np.mean((signal[:WINDOW_SIZE] - output) ** 2)
+            ssim_val = ssim(signal[:WINDOW_SIZE], output, data_range=output.max() - output.min())  # ⬅ SSIM
+
+            results.append({
+                "file": fname,
+                "mse": mse_val,
+                "ssim": ssim_val
+            })
 
             # Сохранить график
             plot_path = os.path.join(input_dir, fname.replace(".npy", "_reconstructed.png"))
             plot_comparison(signal[:WINDOW_SIZE], output, plot_path)
-            print(f"✅ {fname}: MSE = {mse:.6f}")
+            print(f"✅ {fname}: MSE = {mse_val:.6f}, SSIM = {ssim_val:.4f}")
 
-    # Сохраняем CSV
+    # Анализ и сохранение
     df = pd.DataFrame(results)
-    df.to_csv(output_csv, index=False)
-    print(f"\n📋 Сводная таблица сохранена: {output_csv}")
+    anomaly_threshold = df["mse"].mean() + 2 * df["mse"].std()
+    df["anomaly"] = df["mse"] > anomaly_threshold
+    df_sorted = df.sort_values(by="mse", ascending=False)
+    df_sorted.to_csv(output_csv, index=False)
+    print(f"\n📋 Обновлённая таблица с MSE и SSIM сохранена: {output_csv}")
+    print(f"🚨 Порог аномалии (по MSE): {anomaly_threshold:.6f}")
+    print(df_sorted.head(5))
+
+    anomalies_only = df_sorted[df_sorted["anomaly"] == True]
+    anomalies_only.to_csv(
+        os.path.join(os.path.dirname(output_csv), "anomalies_only.csv"), index=False
+    )
+    print(f"📌 Отдельно сохранены аномальные сигналы: anomalies_only.csv")
