@@ -26,6 +26,7 @@ fastjsonschema==2.21.1
 filelock==3.13.1
 flatbuffers==25.2.10
 fonttools==4.57.0
+fpdf==1.7.2
 fqdn==1.5.1
 fsspec==2024.6.1
 gast==0.6.0
@@ -36,6 +37,7 @@ h5py==3.13.0
 httpcore==1.0.8
 httpx==0.28.1
 idna==3.10
+imageio==2.37.0
 ipykernel==6.29.5
 ipython==9.1.0
 ipython_pygments_lexers==1.1.1
@@ -58,6 +60,7 @@ jupyterlab_pygments==0.3.0
 jupyterlab_server==2.27.3
 keras==3.9.2
 kiwisolver==1.4.8
+lazy_loader==0.4
 libclang==18.1.1
 Markdown==3.8
 markdown-it-py==3.0.0
@@ -123,6 +126,7 @@ rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rich==14.0.0
 rpds-py==0.24.0
+scikit-image==0.25.2
 scikit-learn==1.6.1
 scipy==1.15.2
 seaborn==0.13.2
@@ -139,6 +143,7 @@ tensorflow==2.19.0
 termcolor==3.0.1
 terminado==0.18.1
 threadpoolctl==3.6.0
+tifffile==2025.3.30
 tinycss2==1.4.0
 torch==2.7.0+cu118
 torchaudio==2.7.0+cu118
