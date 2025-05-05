@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 WINDOW_SIZE = 512
-ANOMALY_THRESHOLD = 0.1  # чувствительность подсветки
+ANOMALY_THRESHOLD = 0.02  # чувствительность подсветки
 
 class Autoencoder(nn.Module):
     def __init__(self):
@@ -94,7 +94,7 @@ def infer_on_file(model, file_path, save_dir, log_path):
 
 if __name__ == "__main__":
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    model_path = os.path.join(root, "models", "autoencoder.pth")
+    model_path = os.path.join(root, "models", "autoencoder_synthetic.pth")
     save_dir = os.path.join(root, "data", "inference_samples")
     log_path = os.path.join(save_dir, "inference_samples_log.csv")
     os.makedirs(save_dir, exist_ok=True)

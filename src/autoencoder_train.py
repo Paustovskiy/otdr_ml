@@ -68,6 +68,6 @@ for epoch in range(EPOCHS):
 
 # === 6. Сохранение модели ===
 os.makedirs(os.path.join(root, "models"), exist_ok=True)
-model_path = os.path.join(root, "models", "autoencoder.pth")
+model_path = os.path.join(root, "models", "autoencoder_synthetic.pth")
 torch.save(model.state_dict(), model_path)
 print(f"✅ Модель сохранена в: {model_path}")
