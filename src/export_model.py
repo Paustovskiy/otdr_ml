@@ -18,7 +18,14 @@ example = torch.randn(1, 512)
 # 3) Трассировка TorchScript
 traced = torch.jit.trace(model, example)
 
-# 4) Сохраняем
+# 4) Квантование
+quantized = torch.quantization.quantize_dynamic(
+    traced, {torch.nn.Linear}, dtype=torch.qint8
+)
+quantized.save(MODEL_OUT.replace(".ts", "_quant.ts"))
+print("✅ Сохранена квантованная модель")
+
+# 5) Сохраняем
 os.makedirs(os.path.dirname(MODEL_OUT), exist_ok=True)
 traced.save(MODEL_OUT)
 print(f"✅ TorchScript-модель сохранена: {MODEL_OUT}")
